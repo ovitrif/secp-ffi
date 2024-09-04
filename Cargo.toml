@@ -1,0 +1,30 @@
+[package]
+name = "secp-ffi"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[lib]
+crate-type = ["lib", "staticlib", "cdylib"]
+name = "secpffi"
+
+[[bin]]
+name = "uniffi-bindgen"
+path = "uniffi-bindgen.rs"
+
+[features]
+default = ["uniffi/cli"]
+
+[dependencies]
+secp256k1 = { version = "0.29.0" }
+#serde = { version = "1.0.209", default-features = false, optional = true }
+#hashes = { package = "bitcoin_hashes", version = "0.14", default-features = false, optional = true }
+#rand = { version = "0.8", default-features = false, optional = true }
+
+uniffi = { version = "0.28.1", features = ["cli"] }
+
+[build-dependencies]
+uniffi = { version = "0.28.1", features = ["build"] }
+
+[dev-dependencies]
+#uniffi = { version = "0.28.0", features = ["bindgen-tests"] }
