@@ -1,8 +1,9 @@
 # secp-ffi
+rust-secp256k1 uniffi bindings for kotlin and swift
 
 ## Generate Bindings 
-First build for release
 ```sh
+# build in release mode
 cargo build --release
 ````
 
