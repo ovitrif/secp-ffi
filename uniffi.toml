@@ -1,0 +1,7 @@
+[bindings.kotlin]
+package_name = "org.secp"
+cdylib_name = "secpffi"
+
+[bindings.swift]
+module_name = "SecpFFI"
+cdylib_name = "secpffi"
