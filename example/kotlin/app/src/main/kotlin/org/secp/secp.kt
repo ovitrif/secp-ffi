@@ -696,6 +696,8 @@ internal interface UniffiForeignFutureCompleteVoid : com.sun.jna.Callback {
 
 
 
+
+
 // A JNA Library to expose the extern-C FFI definitions.
 // This is an implementation detail which will be called internally by the public API.
 
@@ -712,6 +714,8 @@ internal interface UniffiLib : Library {
     }
 
     fun uniffi_secpffi_fn_func_generate_key_pair(uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_secpffi_fn_func_generate_shared_secret(`ourPrivateKeyBytes`: RustBuffer.ByValue,`theirPublicKeyBytes`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     fun uniffi_secpffi_fn_func_sign_message(`messageString`: RustBuffer.ByValue,`privateKeyBytes`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
@@ -831,6 +835,8 @@ internal interface UniffiLib : Library {
     ): Unit
     fun uniffi_secpffi_checksum_func_generate_key_pair(
     ): Short
+    fun uniffi_secpffi_checksum_func_generate_shared_secret(
+    ): Short
     fun uniffi_secpffi_checksum_func_sign_message(
     ): Short
     fun uniffi_secpffi_checksum_func_verify_message(
@@ -853,6 +859,9 @@ private fun uniffiCheckContractApiVersion(lib: UniffiLib) {
 @Suppress("UNUSED_PARAMETER")
 private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_secpffi_checksum_func_generate_key_pair() != 61432.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_secpffi_checksum_func_generate_shared_secret() != 40802.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_secpffi_checksum_func_sign_message() != 25006.toShort()) {
@@ -1052,6 +1061,15 @@ public object FfiConverterSequenceUByte: FfiConverterRustBuffer<List<kotlin.UByt
     uniffiRustCall() { _status ->
     UniffiLib.INSTANCE.uniffi_secpffi_fn_func_generate_key_pair(
         _status)
+}
+    )
+    }
+    
+ fun `generateSharedSecret`(`ourPrivateKeyBytes`: List<kotlin.UByte>, `theirPublicKeyBytes`: List<kotlin.UByte>): kotlin.String {
+            return FfiConverterString.lift(
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_secpffi_fn_func_generate_shared_secret(
+        FfiConverterSequenceUByte.lower(`ourPrivateKeyBytes`),FfiConverterSequenceUByte.lower(`theirPublicKeyBytes`),_status)
 }
     )
     }

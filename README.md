@@ -2,24 +2,33 @@
 rust-secp256k1 uniffi bindings for kotlin and swift
 
 ## 1. Build Binaries
-```sh
-# build in release mode `cargo build --release` # deprecated
 
-# android - arm64-v8a (modern hw) `rustup target add aarch64-linux-android`
+### Prerequisite
+```sh
+# rust - targets
+rustup target add aarch64-linux-android   # android - arm64-v8a
+rustup target add aarch64-apple-darwin    # jvm - arm
+rustup target add x86_64-apple-darwin     # jvm - x86
+
+# android - ndk environment variables
 export CFLAGS="-D__ANDROID_MIN_SDK_VERSION__=24"
 export AR="llvm-ar"
 export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="aarch64-linux-android24-clang"
 export CC="aarch64-linux-android24-clang"
+``` 
 
+### Build
+```sh
+# android - arm64-v8a (modern hw)
 cargo build --profile release-smaller --target aarch64-linux-android
 # TODO android - x86_64 (emulators) 
 # TODO android - armeabi-v7a (old 32-bit hw)
-
-# jvm - arm `rustup target add aarch64-apple-darwin`
+  
+# jvm - arm
 cargo build --profile release-smaller --target aarch64-apple-darwin
 
-# jvm - x86 `rustup target add x86_64-apple-darwin`
-cargo build --profile release-smaller --target x86_64-apple-darwin
+# jvm - x86
+#cargo build --profile release-smaller --target x86_64-apple-darwin
 ````
 
 ## 2. Copy Binaries

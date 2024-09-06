@@ -1,6 +1,7 @@
 use secp256k1::rand::rngs::OsRng;
 use secp256k1::{Secp256k1, Message, SecretKey, PublicKey, ecdsa};
 use secp256k1::hashes::{sha256, Hash};
+use secp256k1::ecdh::{SharedSecret};
 
 // region types
 pub struct KeyPair {
@@ -43,6 +44,14 @@ pub fn verify_message(signature_compact_bytes: Vec<u8>, message_string: String, 
 
     secp.verify_ecdsa(&message, &signature, &public_key).is_ok()
 }
+
+pub fn generate_shared_secret(our_private_key_bytes: Vec<u8>, their_public_key_bytes: Vec<u8>) -> String {
+    let secret_key = SecretKey::from_slice(&our_private_key_bytes).expect("32 bytes private key");
+    let public_key = PublicKey::from_slice(&their_public_key_bytes).expect("Valid public key");
+
+    let secret = SharedSecret::new(&public_key, &secret_key);
+    secret.display_secret().to_string()
+}
 // endregion
 
 // region tests
@@ -78,6 +87,17 @@ mod tests {
         assert!(is_verified); // Ensure the message is verified
         println!("Message: {}", message);
         println!("IsVerified: {}", is_verified);
+    }
+
+    #[test]
+    fn test_generate_shared_secret() {
+        let our_key_pair = generate_key_pair();
+        let their_key_pair = generate_key_pair();
+        let our_shared_secret = generate_shared_secret(our_key_pair.private_key.clone(), their_key_pair.public_key.clone());
+        let their_shared_secret = generate_shared_secret(their_key_pair.private_key.clone(), our_key_pair.public_key.clone());
+        assert_eq!(our_shared_secret, their_shared_secret);
+        println!("Our Shared Secret: {}", our_shared_secret);
+        println!("Their Shared Secret: {}", their_shared_secret);
     }
 }
 // endregion

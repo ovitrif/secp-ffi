@@ -16,6 +16,12 @@ fun main() {
         val isVerified = Secp.verifyMessage(signature, message, keyPair.publicKey)
         println("isVerified: $isVerified")
 
+        val keyPairPeer = Secp.generateKeyPair()
+        val ourSharedSecret = Secp.generateSharedSecret(keyPair.privateKey, keyPairPeer.publicKey)
+        val theirSharedSecret = Secp.generateSharedSecret(keyPairPeer.privateKey, keyPair.publicKey)
+        assert(ourSharedSecret == theirSharedSecret) { "Shared secret is not equal" }
+        println("SharedSecret: $ourSharedSecret")
+
     } catch (e: Exception) {
         e.printStackTrace()
     }
