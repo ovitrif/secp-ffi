@@ -6,12 +6,12 @@ fun main() {
     try {
         val keyPair = Secp.generateKeyPair()
         println("KeyPair")
-        println("├── Private Key: ${keyPair.privateKey}")
-        println("└── Public Key: ${keyPair.publicKey}")
+        println("├── Private Key(${keyPair.privateKey.size}): ${keyPair.privateKey}")
+        println("└── Public Key(${keyPair.publicKey.size}): ${keyPair.publicKey}")
 
         val message = "Hello World!"
         val signature = Secp.signMessage(message, keyPair.privateKey)
-        println("Signature: $signature")
+        println("Signature(${signature.size}): $signature")
 
         val isVerified = Secp.verifyMessage(signature, message, keyPair.publicKey)
         println("isVerified: $isVerified")
@@ -20,7 +20,7 @@ fun main() {
         val ourSharedSecret = Secp.generateSharedSecret(keyPair.privateKey, keyPairPeer.publicKey)
         val theirSharedSecret = Secp.generateSharedSecret(keyPairPeer.privateKey, keyPair.publicKey)
         assert(ourSharedSecret == theirSharedSecret) { "Shared secret is not equal" }
-        println("SharedSecret: $ourSharedSecret")
+        println("SharedSecret (${ourSharedSecret.length}): $ourSharedSecret")
 
     } catch (e: Exception) {
         e.printStackTrace()

@@ -36,8 +36,8 @@ pub fn sign_message(message_string: String, private_key_bytes: Vec<u8>) -> Vec<u
 
 pub fn verify_message(signature_compact_bytes: Vec<u8>, message_string: String, public_key_bytes: Vec<u8>) -> bool {
     let secp = Secp256k1::verification_only();
-    let signature = ecdsa::Signature::from_compact(&signature_compact_bytes).expect("compact signature");
-    let public_key = PublicKey::from_slice(&public_key_bytes).expect("Valid public key");
+    let signature = ecdsa::Signature::from_compact(&signature_compact_bytes).expect("64 bytes compact signature");
+    let public_key = PublicKey::from_slice(&public_key_bytes).expect("33 bytes public key");
 
     let digest = sha256::Hash::hash(message_string.as_bytes());
     let message = Message::from_digest(digest.to_byte_array());
@@ -47,7 +47,7 @@ pub fn verify_message(signature_compact_bytes: Vec<u8>, message_string: String, 
 
 pub fn generate_shared_secret(our_private_key_bytes: Vec<u8>, their_public_key_bytes: Vec<u8>) -> String {
     let secret_key = SecretKey::from_slice(&our_private_key_bytes).expect("32 bytes private key");
-    let public_key = PublicKey::from_slice(&their_public_key_bytes).expect("Valid public key");
+    let public_key = PublicKey::from_slice(&their_public_key_bytes).expect("33 bytes public key");
 
     let secret = SharedSecret::new(&public_key, &secret_key);
     secret.display_secret().to_string()
