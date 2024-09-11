@@ -53,16 +53,17 @@ cargo run --bin uniffi-bindgen generate --library target/aarch64-apple-darwin/re
 #### Swift
 ```sh
 # TODO: `rustup target add <arch>`
-#cargo run --bin uniffi-bindgen generate --library target/<arch>/<profile>/libsecpffi.so --language swift --out-dir out --no-format
+#cargo run --bin uniffi-bindgen generate --library target/<arch>/<profile>/libsecpffi.so --language swift --out-dir <out_dir> --no-format
 ```
 
 ### b) Single UDL mode (alternative):
 ```sh
+# Kotlin
 cargo run --features=uniffi/cli --bin uniffi-bindgen generate src/secp.udl --language kotlin
 ```
 
 ## Example Apps
-### Kotlin
+### Kotlin (JVM App)
 ```sh
 idea example/kotlin
 ```
