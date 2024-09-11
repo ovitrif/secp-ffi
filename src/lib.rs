@@ -1,7 +1,7 @@
+use secp256k1::ecdh::SharedSecret;
+use secp256k1::hashes::{sha256, sha256d, Hash};
 use secp256k1::rand::rngs::OsRng;
-use secp256k1::{Secp256k1, Message, SecretKey, PublicKey, ecdsa};
-use secp256k1::hashes::{sha256, Hash};
-use secp256k1::ecdh::{SharedSecret};
+use secp256k1::{ecdsa, Message, PublicKey, Secp256k1, SecretKey};
 
 // region types
 pub struct KeyPair {
@@ -27,7 +27,7 @@ pub fn sign_message(message_string: String, private_key_bytes: Vec<u8>) -> Vec<u
     let secp = Secp256k1::new();
     let secret_key = SecretKey::from_slice(&private_key_bytes).expect("32 bytes private key");
 
-    let digest = sha256::Hash::hash(message_string.as_bytes());
+    let digest = sha256d(message_string);
     let message = Message::from_digest(digest.to_byte_array());
 
     let signature = secp.sign_ecdsa(&message, &secret_key);
@@ -39,7 +39,7 @@ pub fn verify_message(signature_compact_bytes: Vec<u8>, message_string: String, 
     let signature = ecdsa::Signature::from_compact(&signature_compact_bytes).expect("64 bytes compact signature");
     let public_key = PublicKey::from_slice(&public_key_bytes).expect("33 bytes public key");
 
-    let digest = sha256::Hash::hash(message_string.as_bytes());
+    let digest = sha256d(message_string);
     let message = Message::from_digest(digest.to_byte_array());
 
     secp.verify_ecdsa(&message, &signature, &public_key).is_ok()
@@ -51,6 +51,10 @@ pub fn generate_shared_secret(our_private_key_bytes: Vec<u8>, their_public_key_b
 
     let secret = SharedSecret::new(&public_key, &secret_key);
     secret.display_secret().to_string()
+}
+
+fn sha256d(message_string: String) -> sha256d::Hash {
+    sha256::Hash::hash(message_string.as_bytes()).hash_again()
 }
 // endregion
 
